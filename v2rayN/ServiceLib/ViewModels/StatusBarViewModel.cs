@@ -137,6 +137,7 @@ namespace ServiceLib.ViewModels
             NotifyLeftClickCmd = ReactiveCommand.CreateFromTask(async () =>
             {
                 Locator.Current.GetService<MainWindowViewModel>()?.ShowHideWindow(null);
+                await Task.CompletedTask;
             });
 
             AddServerViaClipboardCmd = ReactiveCommand.CreateFromTask(async () =>
@@ -180,7 +181,7 @@ namespace ServiceLib.ViewModels
             {
                 InitUpdateView(updateView);
             }
-            Init();
+            _ = Init();
         }
 
         private async Task Init()
@@ -478,12 +479,19 @@ namespace ServiceLib.ViewModels
             {
                 InboundLanDisplay = $"{ResUI.LabLAN}:{Global.None}";
             }
+            await Task.CompletedTask;
         }
 
         public void UpdateStatistics(ServerSpeedItem update)
         {
-            SpeedProxyDisplay = string.Format(ResUI.SpeedDisplayText, Global.ProxyTag, Utils.HumanFy(update.ProxyUp), Utils.HumanFy(update.ProxyDown));
-            SpeedDirectDisplay = string.Format(ResUI.SpeedDisplayText, Global.DirectTag, Utils.HumanFy(update.DirectUp), Utils.HumanFy(update.DirectDown));
+            try
+            {
+                SpeedProxyDisplay = string.Format(ResUI.SpeedDisplayText, Global.ProxyTag, Utils.HumanFy(update.ProxyUp), Utils.HumanFy(update.ProxyDown));
+                SpeedDirectDisplay = string.Format(ResUI.SpeedDisplayText, Global.DirectTag, Utils.HumanFy(update.DirectUp), Utils.HumanFy(update.DirectDown));
+            }
+            catch
+            {
+            }
         }
 
         #endregion UI
