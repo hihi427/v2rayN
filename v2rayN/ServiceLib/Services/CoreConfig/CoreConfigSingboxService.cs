@@ -35,7 +35,7 @@ namespace ServiceLib.Services.CoreConfig
 
                 ret.Msg = ResUI.InitialConfiguration;
 
-                string result = Utils.GetEmbedText(Global.SingboxSampleClient);
+                string result = EmbedUtils.GetEmbedText(Global.SingboxSampleClient);
                 if (Utils.IsNullOrEmpty(result))
                 {
                     ret.Msg = ResUI.FailedGetDefaultConfiguration;
@@ -91,8 +91,8 @@ namespace ServiceLib.Services.CoreConfig
 
                 ret.Msg = ResUI.InitialConfiguration;
 
-                var result = Utils.GetEmbedText(Global.SingboxSampleClient);
-                var txtOutbound = Utils.GetEmbedText(Global.SingboxSampleOutbound);
+                var result = EmbedUtils.GetEmbedText(Global.SingboxSampleClient);
+                var txtOutbound = EmbedUtils.GetEmbedText(Global.SingboxSampleOutbound);
                 if (Utils.IsNullOrEmpty(result) || txtOutbound.IsNullOrEmpty())
                 {
                     ret.Msg = ResUI.FailedGetDefaultConfiguration;
@@ -255,8 +255,8 @@ namespace ServiceLib.Services.CoreConfig
 
                 ret.Msg = ResUI.InitialConfiguration;
 
-                string result = Utils.GetEmbedText(Global.SingboxSampleClient);
-                string txtOutbound = Utils.GetEmbedText(Global.SingboxSampleOutbound);
+                string result = EmbedUtils.GetEmbedText(Global.SingboxSampleClient);
+                string txtOutbound = EmbedUtils.GetEmbedText(Global.SingboxSampleOutbound);
                 if (Utils.IsNullOrEmpty(result) || txtOutbound.IsNullOrEmpty())
                 {
                     ret.Msg = ResUI.FailedGetDefaultConfiguration;
@@ -546,7 +546,7 @@ namespace ServiceLib.Services.CoreConfig
                         _config.TunModeItem.Stack = Global.TunStacks.First();
                     }
 
-                    var tunInbound = JsonUtils.Deserialize<Inbound4Sbox>(Utils.GetEmbedText(Global.TunSingboxInboundFileName)) ?? new Inbound4Sbox { };
+                    var tunInbound = JsonUtils.Deserialize<Inbound4Sbox>(EmbedUtils.GetEmbedText(Global.TunSingboxInboundFileName)) ?? new Inbound4Sbox { };
                     tunInbound.interface_name = Utils.IsOSX() ? $"utun{new Random().Next(99)}" : "singbox_tun";
                     tunInbound.mtu = _config.TunModeItem.Mtu;
                     tunInbound.strict_route = _config.TunModeItem.StrictRoute;
@@ -867,7 +867,7 @@ namespace ServiceLib.Services.CoreConfig
 
                 //current proxy
                 var outbound = singboxConfig.outbounds.First();
-                var txtOutbound = Utils.GetEmbedText(Global.SingboxSampleOutbound);
+                var txtOutbound = EmbedUtils.GetEmbedText(Global.SingboxSampleOutbound);
 
                 //Previous proxy
                 var prevNode = await AppHandler.Instance.GetProfileItemViaRemarks(subItem.PrevProfile);
@@ -934,7 +934,7 @@ namespace ServiceLib.Services.CoreConfig
                 {
                     singboxConfig.route.auto_detect_interface = true;
 
-                    var tunRules = JsonUtils.Deserialize<List<Rule4Sbox>>(Utils.GetEmbedText(Global.TunSingboxRulesFileName));
+                    var tunRules = JsonUtils.Deserialize<List<Rule4Sbox>>(EmbedUtils.GetEmbedText(Global.TunSingboxRulesFileName));
                     if (tunRules != null)
                     {
                         singboxConfig.route.rules.AddRange(tunRules);
@@ -1048,7 +1048,8 @@ namespace ServiceLib.Services.CoreConfig
                     var countDomain = 0;
                     foreach (var it in item.Domain)
                     {
-                        if (ParseV2Domain(it, rule1)) countDomain++;
+                        if (ParseV2Domain(it, rule1))
+                            countDomain++;
                     }
                     if (countDomain > 0)
                     {
@@ -1062,7 +1063,8 @@ namespace ServiceLib.Services.CoreConfig
                     var countIp = 0;
                     foreach (var it in item.Ip)
                     {
-                        if (ParseV2Address(it, rule2)) countIp++;
+                        if (ParseV2Address(it, rule2))
+                            countIp++;
                     }
                     if (countIp > 0)
                     {
@@ -1148,12 +1150,14 @@ namespace ServiceLib.Services.CoreConfig
             }
             else if (address.StartsWith("geoip:"))
             {
-                if (rule.geoip is null) { rule.geoip = new(); }
+                if (rule.geoip is null)
+                { rule.geoip = new(); }
                 rule.geoip?.Add(address.Substring(6));
             }
             else
             {
-                if (rule.ip_cidr is null) { rule.ip_cidr = new(); }
+                if (rule.ip_cidr is null)
+                { rule.ip_cidr = new(); }
                 rule.ip_cidr?.Add(address);
             }
             return true;
@@ -1167,11 +1171,11 @@ namespace ServiceLib.Services.CoreConfig
                 var strDNS = string.Empty;
                 if (_config.TunModeItem.EnableTun)
                 {
-                    strDNS = Utils.IsNullOrEmpty(item?.TunDNS) ? Utils.GetEmbedText(Global.TunSingboxDNSFileName) : item?.TunDNS;
+                    strDNS = Utils.IsNullOrEmpty(item?.TunDNS) ? EmbedUtils.GetEmbedText(Global.TunSingboxDNSFileName) : item?.TunDNS;
                 }
                 else
                 {
-                    strDNS = Utils.IsNullOrEmpty(item?.NormalDNS) ? Utils.GetEmbedText(Global.DNSSingboxNormalFileName) : item?.NormalDNS;
+                    strDNS = Utils.IsNullOrEmpty(item?.NormalDNS) ? EmbedUtils.GetEmbedText(Global.DNSSingboxNormalFileName) : item?.NormalDNS;
                 }
 
                 var dns4Sbox = JsonUtils.Deserialize<Dns4Sbox>(strDNS);
@@ -1271,7 +1275,8 @@ namespace ServiceLib.Services.CoreConfig
         {
             static void AddRuleSets(List<string> ruleSets, List<string>? rule_set)
             {
-                if (rule_set != null) ruleSets.AddRange(rule_set);
+                if (rule_set != null)
+                    ruleSets.AddRange(rule_set);
             }
             var geosite = "geosite";
             var geoip = "geoip";
@@ -1321,7 +1326,7 @@ namespace ServiceLib.Services.CoreConfig
             var routing = await ConfigHandler.GetDefaultRouting(_config);
             if (Utils.IsNotEmpty(routing.CustomRulesetPath4Singbox))
             {
-                var result = Utils.LoadResource(routing.CustomRulesetPath4Singbox);
+                var result = EmbedUtils.LoadResource(routing.CustomRulesetPath4Singbox);
                 if (Utils.IsNotEmpty(result))
                 {
                     customRulesets = (JsonUtils.Deserialize<List<Ruleset4Sbox>>(result) ?? [])
@@ -1339,7 +1344,8 @@ namespace ServiceLib.Services.CoreConfig
             singboxConfig.route.rule_set = [];
             foreach (var item in new HashSet<string>(ruleSets))
             {
-                if (Utils.IsNullOrEmpty(item)) { continue; }
+                if (Utils.IsNullOrEmpty(item))
+                { continue; }
                 var customRuleset = customRulesets.FirstOrDefault(t => t.tag != null && t.tag.Equals(item));
                 if (customRuleset is null)
                 {
