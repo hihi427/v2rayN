@@ -158,6 +158,7 @@ namespace ServiceLib.Handler
                 Length = "100-200",
                 Interval = "10-20"
             };
+            config.GlobalHotkeys ??= new();
 
             if (config.SystemProxyItem.SystemProxyExceptions.IsNullOrEmpty())
             {
@@ -724,7 +725,7 @@ namespace ServiceLib.Handler
             profileItem.Network = string.Empty;
             if (profileItem.ShortId.IsNullOrEmpty())
             {
-                profileItem.ShortId = Global.TunMtus.FirstOrDefault();
+                profileItem.ShortId = Global.TunMtus.First().ToString();
             }
 
             if (profileItem.Id.IsNullOrEmpty())

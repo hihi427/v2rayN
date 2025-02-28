@@ -38,6 +38,8 @@ namespace ServiceLib
         public const string ClashTunYaml = NamespaceSample + "clash_tun_yaml";
         public const string LinuxAutostartConfig = NamespaceSample + "linux_autostart_config";
         public const string PacFileName = NamespaceSample + "pac";
+        public const string ProxySetOSXShellFileName = NamespaceSample + "proxy_set_osx_sh";
+        public const string ProxySetLinuxShellFileName = NamespaceSample + "proxy_set_linux_sh";
 
         public const string DefaultSecurity = "auto";
         public const string DefaultNetwork = "tcp";
@@ -67,10 +69,11 @@ namespace ServiceLib
         public const int MinFontSize = 8;
         public const string RebootAs = "rebootas";
         public const string AvaAssets = "avares://v2rayN/Assets/";
-        public const string LocalAppData = "V2RAYN_LOCAL_APPLICATION_DATA";
+        public const string LocalAppData = "V2RAYN_LOCAL_APPLICATION_DATA_V2";
         public const string V2RayLocalAsset = "V2RAY_LOCATION_ASSET";
         public const string XrayLocalAsset = "XRAY_LOCATION_ASSET";
         public const int SpeedTestPageSize = 1000;
+        public const string LinuxBash = "/bin/bash";
 
         public static readonly List<string> IEProxyProtocols =
         [
@@ -426,12 +429,12 @@ namespace ServiceLib
             "fakedns+others"
         ];
 
-        public static readonly List<string> TunMtus =
+        public static readonly List<int> TunMtus =
         [
-            "1280",
-            "1408",
-            "1500",
-            "9000"
+            1280,
+            1408,
+            1500,
+            9000
         ];
 
         public static readonly List<string> TunStacks =
